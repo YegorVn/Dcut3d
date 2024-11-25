@@ -63,7 +63,7 @@ loader.load(
 
     console.log("Модель загружена:", gltf);
 
-    startAnimation();
+    // startAnimation();
     updateModelScale(); // Установить начальный масштаб
   },
   (xhr) => {
@@ -80,6 +80,7 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.minDistance = 0;
 controls.maxDistance = 1.75;
+controls.enableZoom = false;
 
 // Анимация
 function animate() {
@@ -87,7 +88,7 @@ function animate() {
 
   controls.update();
   renderer.render(scene, camera);
-  logCameraPosition();
+  //   logCameraPosition();
 }
 
 animate();
@@ -127,27 +128,91 @@ window.addEventListener("resize", () => {
   updateModelScale(); // Обновить масштаб модели при изменении размера окна
 });
 
+let scrollPos = 0;
+const scrollPosAmount = 0.25;
+let isOnGoing = false;
+
+const text_1 = document.querySelector(".text_1");
+
+window.addEventListener("wheel", () => {
+  console.log(scrollPos);
+  if (scrollPos <= 11) {
+    text_1.style.transform = `translateX(${(0.5 - scrollPos / 6) * 100}%)`;
+  }
+  text_1.style.opacity = scrollPos / 4;
+
+  if (scrollPos === 4) {
+    const animDuration = 2;
+    scrollPos = scrollPos + scrollPosAmount;
+    isOnGoing = true;
+    startAnimation_1(animDuration);
+    setTimeout(() => {
+      isOnGoing = false;
+    }, animDuration * 1000);
+  }
+  if (scrollPos === 10) {
+    const header_1 = text_1.querySelector("h2");
+    const text_body_1 = text_1.querySelector(".text__body");
+    header_1.innerHTML = "Усиленная редукторная<br/> группа";
+    text_body_1.innerHTML =
+      "<p>Спроектирована специально для интенсивного использования</p><p>Шестерни изготовлены из уникального высокопрочного сплава, а их геометрия специально разработана для увеличения пятна контакта шестерей и снижения их износа</p>";
+    const animDuration = 3;
+    scrollPos = scrollPos + scrollPosAmount;
+    isOnGoing = true;
+    startAnimation_2(animDuration);
+    setTimeout(() => {
+      isOnGoing = false;
+    }, animDuration * 1000);
+  }
+  if (!isOnGoing) {
+    scrollPos = scrollPos + scrollPosAmount;
+  }
+});
+
 // Анимация с использованием GSAP
-function startAnimation() {
-  // Этап 1: Анимация приближения
+// function startAnimation() {
+//   // Этап 1: Анимация приближения
+//   gsap.to(camera.position, {
+//     x: 0.51,
+//     y: 0.51,
+//     z: -1.24,
+//     duration: 3,
+//     ease: "power2.inOut",
+//     onComplete: () => {
+//       // Этап 2: Анимация поворота
+//       gsap.to(camera.position, {
+//         x: 0.51,
+//         y: 0.51,
+//         z: 1.24,
+//         duration: 3,
+//         ease: "power2.inOut",
+//         onComplete: () => {
+//           console.log("Анимация завершена.");
+//         },
+//       });
+//     },
+//   });
+// }
+
+function modifyText_1(duration) {}
+
+function startAnimation_1(duration) {
   gsap.to(camera.position, {
     x: 0.51,
     y: 0.51,
     z: -1.24,
-    duration: 3,
+    duration: duration,
     ease: "power2.inOut",
-    onComplete: () => {
-      // Этап 2: Анимация поворота
-      gsap.to(camera.position, {
-        x: 0.51,
-        y: 0.51,
-        z: 1.24,
-        duration: 3,
-        ease: "power2.inOut",
-        onComplete: () => {
-          console.log("Анимация завершена.");
-        },
-      });
-    },
+  });
+}
+
+function startAnimation_2(duration) {
+  // Этап 2: Анимация поворота
+  gsap.to(camera.position, {
+    x: 0.51,
+    y: 0.51,
+    z: 1.24,
+    duration: duration,
+    ease: "power2.inOut",
   });
 }
